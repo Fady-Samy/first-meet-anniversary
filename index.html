@@ -846,7 +846,7 @@
     </style>
   </head>
   <body>
-    <audio id="song1" src="./assets/kanethnak1.mp3" autoplay></audio>
+    <audio id="song1" src="./assets/kanethnak1.mp3"></audio>
     <audio id="song2" src="./assets/kanethnak2.mp3"></audio>
 
     <!-- table decorations -->
@@ -1380,6 +1380,16 @@
         });
       })();
 
+      /* ---------- play first song on page load / refresh ---------- */
+      window.addEventListener("load", () => {
+        if (song1) {
+          song1.currentTime = 0;
+
+          song1.play().catch((error) => {
+            console.warn("Autoplay blocked by browser:", error);
+          });
+        }
+      });
       // window.addEventListener("DOMContentLoaded", () => {
       //   const audio = document.getElementById("song1");
 
