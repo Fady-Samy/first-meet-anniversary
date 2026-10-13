@@ -1376,35 +1376,29 @@
         });
       })();
 
-      /* ---------- play first song on page load / refresh ---------- */
-      /* ---------- start song1 on page load ---------- */
-      function startFirstSong() {
+      /* ---------- first song ---------- */
+      async function startFirstSong() {
         if (!song1) return;
 
-        song1.play().catch((error) => {
-          console.log("Autoplay blocked; waiting for user interaction.");
-        });
+        try {
+          await song1.play();
+
+          // Remove fallback listeners once playback starts
+          document.removeEventListener("click", startFirstSong);
+          document.removeEventListener("touchstart", startFirstSong);
+          document.removeEventListener("keydown", startFirstSong);
+        } catch (error) {
+          console.log("Waiting for the first user interaction to play music.");
+        }
       }
 
       // Attempt autoplay when the page loads
       window.addEventListener("load", startFirstSong);
 
-      // Fallback: start song1 on the first user interaction
-      function enableFirstSong() {
-        if (song1 && song1.paused && !isOpen) {
-          song1.play().catch(console.warn);
-        }
-
-        if (song1 && !song1.paused) {
-          document.removeEventListener("click", enableFirstSong);
-          document.removeEventListener("touchstart", enableFirstSong);
-          document.removeEventListener("keydown", enableFirstSong);
-        }
-      }
-
-      document.addEventListener("click", enableFirstSong);
-      document.addEventListener("touchstart", enableFirstSong);
-      document.addEventListener("keydown", enableFirstSong);
+      // Fallback if autoplay is blocked
+      document.addEventListener("click", startFirstSong);
+      document.addEventListener("touchstart", startFirstSong);
+      document.addEventListener("keydown", startFirstSong);
 
       // window.addEventListener("load", () => {
       //   if (song1) {
